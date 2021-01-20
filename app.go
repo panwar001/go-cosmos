@@ -12,7 +12,8 @@ import (
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/mux"
+    "github.com/gorilla/mux"
+    "github.com/gorilla/handlers"
 )
 
 type App struct {
@@ -35,7 +36,7 @@ func (a *App) Initialize(user, password, host, dbname string) {
 
 func (a *App) Run(addr string) {
 	fmt.Println("Server Listening at :9100")
-	log.Fatal(http.ListenAndServe(":9100", a.Router))
+	log.Fatal(http.ListenAndServe(":9100", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(a.Router)))
 }
 
 func getStatus(w http.ResponseWriter, r *http.Request) {
@@ -86,7 +87,7 @@ func respondWithError(w http.ResponseWriter, code int, message string) {
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 
-	w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
 }
