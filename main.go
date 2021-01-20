@@ -2,8 +2,10 @@
 
 package main
 
-import ("os"
-	"fmt")
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
 	fmt.Printf("Welcome to Cosmos !\n")
